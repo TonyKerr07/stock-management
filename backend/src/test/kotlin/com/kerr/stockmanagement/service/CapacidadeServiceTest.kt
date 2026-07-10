@@ -65,4 +65,31 @@ class CapacidadeServiceTest : FunSpec({
         resultado.insumoLimitanteNome shouldBe "Fita adesiva"
         resultado.gargaloConsistente shouldBe false
     }
+
+    test("um insumo compartilhado por dois produtos deve ter a capacidade calculada de forma independente para cada um") {
+        // A etiqueta é usada tanto na Toalha quanto no Pêndulo, mas cada produto tem sua
+        // própria receita e seu próprio gargalo — o cálculo de um não deve afetar o outro.
+        val etiqueta = Insumo(id = 1, nome = "Etiqueta", quantidadeEstoque = 30)
+        val toalha = Insumo(id = 2, nome = "Toalha", quantidadeEstoque = 50)
+        val pendulo = Insumo(id = 3, nome = "Pêndulo", quantidadeEstoque = 10)
+
+        val produtoToalha = Produto(id = 1, nome = "Toalha Embalada", insumoGargalo = toalha)
+        produtoToalha.receita.add(ProdutoInsumo(produto = produtoToalha, insumo = toalha, quantidadeNecessaria = 1))
+        produtoToalha.receita.add(ProdutoInsumo(produto = produtoToalha, insumo = etiqueta, quantidadeNecessaria = 1))
+
+        val produtoPendulo = Produto(id = 2, nome = "Pêndulo Embalado", insumoGargalo = pendulo)
+        produtoPendulo.receita.add(ProdutoInsumo(produto = produtoPendulo, insumo = pendulo, quantidadeNecessaria = 1))
+        produtoPendulo.receita.add(ProdutoInsumo(produto = produtoPendulo, insumo = etiqueta, quantidadeNecessaria = 1))
+
+        val resultadoToalha = service.calcularCapacidade(produtoToalha)
+        val resultadoPendulo = service.calcularCapacidade(produtoPendulo)
+
+        // Na toalha, a etiqueta (30) é quem limita, não a toalha (50) -> alerta
+        resultadoToalha.capacidadeMaxima shouldBe 30
+        resultadoToalha.gargaloConsistente shouldBe false
+
+        // No pêndulo, o próprio pêndulo (10) é quem limita, não a etiqueta (30) -> sem alerta
+        resultadoPendulo.capacidadeMaxima shouldBe 10
+        resultadoPendulo.gargaloConsistente shouldBe true
+    }
 })

@@ -47,55 +47,61 @@ export default function EntradaEstoquePage() {
   }
 
   return (
-    <Box>
-      <Typography variant="h5" fontWeight={600} gutterBottom>Entrada de Estoque</Typography>
-      <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-        Use esta tela toda vez que você buscar insumos na fábrica da sua sogra. O sistema já soma ao
-        estoque e avisa se algum produto ficará travado por falta de outro insumo.
-      </Typography>
+      <Box>
+        <Typography variant="h5" fontWeight={600} gutterBottom>Entrada de Estoque</Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+          Use esta tela toda vez que você buscar insumos na fábrica. O sistema já soma ao
+          estoque e avisa se algum produto ficará travado por falta de outro insumo.
+        </Typography>
 
-      <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
-        {erro && <Alert severity="error" sx={{ mb: 2 }}>{erro}</Alert>}
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="flex-start">
-          <FormControl sx={{ minWidth: 240 }}>
-            <InputLabel>Insumo</InputLabel>
-            <Select label="Insumo" value={insumoId} onChange={(e) => setInsumoId(e.target.value)}>
-              {insumos.map((i) => (
-                <MenuItem key={i.id} value={String(i.id)}>
-                  {i.nome} (estoque atual: {i.quantidadeEstoque})
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <TextField label="Quantidade trazida" type="number" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} sx={{ minWidth: 180 }} />
-          <TextField label="Observação (opcional)" value={motivo} onChange={(e) => setMotivo(e.target.value)} fullWidth />
-          <Button variant="contained" onClick={registrar} disabled={carregando}>Registrar entrada</Button>
-        </Stack>
-      </Paper>
+        <Paper sx={{ p: 3, mb: 3 }} variant="outlined">
+          {erro && <Alert severity="error" sx={{ mb: 2 }}>{erro}</Alert>}
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems="flex-start">
+            <FormControl sx={{ minWidth: 240 }}>
+              <InputLabel>Insumo</InputLabel>
+              <Select label="Insumo" value={insumoId} onChange={(e) => setInsumoId(e.target.value)}>
+                {insumos.map((i) => (
+                    <MenuItem key={i.id} value={String(i.id)}>
+                      {i.nome} (estoque atual: {i.quantidadeEstoque})
+                    </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField label="Quantidade trazida" type="number" value={quantidade} onChange={(e) => setQuantidade(e.target.value)} sx={{ minWidth: 180 }} />
+            <TextField label="Observação (opcional)" value={motivo} onChange={(e) => setMotivo(e.target.value)} fullWidth />
+            <Button variant="contained" onClick={registrar} disabled={carregando}>Registrar entrada</Button>
+          </Stack>
+        </Paper>
 
-      {resultado && (
-        <Box>
-          <Alert severity="success" sx={{ mb: 2 }}>
-            Estoque de <strong>{resultado.insumo.nome}</strong> atualizado para{' '}
-            <strong>{resultado.insumo.quantidadeEstoque}</strong> unidades.
-          </Alert>
+        {resultado && (
+            <Box>
+              <Alert severity="success" sx={{ mb: 2 }}>
+                Estoque de <strong>{resultado.insumo.nome}</strong> atualizado para{' '}
+                <strong>{resultado.insumo.quantidadeEstoque}</strong> unidades.
+              </Alert>
 
-          {resultado.alertasCapacidade.length > 0 ? (
-            <>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
-                Atenção — capacidade de produção afetada:
-              </Typography>
-              {resultado.alertasCapacidade.map((alerta) => (
-                <AlertaGargalo key={alerta.produtoId} alerta={alerta} />
-              ))}
-            </>
-          ) : (
-            <Alert severity="info">
-              Nenhum alerta de capacidade para os produtos que usam este insumo.
-            </Alert>
-          )}
-        </Box>
-      )}
-    </Box>
+              {resultado.capacidadesAfetadas.length > 0 ? (
+                  <>
+                    <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1 }}>
+                      Produtos que usam este insumo ({resultado.capacidadesAfetadas.length}):
+                    </Typography>
+                    {/* Insumo compartilhado por vários produtos aparece aqui, um card para cada um —
+                  os com problema (gargalo inconsistente ou capacidade zerada) ficam em
+                  laranja/vermelho, os que estão OK ficam em verde. */}
+                    {resultado.capacidadesAfetadas
+                        .slice()
+                        .sort((a, b) => Number(b.temAlerta) - Number(a.temAlerta))
+                        .map((alerta) => (
+                            <AlertaGargalo key={alerta.produtoId} alerta={alerta} />
+                        ))}
+                  </>
+              ) : (
+                  <Alert severity="info">
+                    Nenhum produto cadastrado usa este insumo ainda.
+                  </Alert>
+              )}
+            </Box>
+        )}
+      </Box>
   )
 }

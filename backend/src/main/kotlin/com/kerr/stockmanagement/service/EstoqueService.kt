@@ -46,12 +46,14 @@ class EstoqueService(
             )
         )
 
+        // Busca TODOS os produtos que usam esse insumo na receita — não importa se é o
+        // gargalo definido ou apenas um insumo secundário. Se o insumo for compartilhado
+        // por vários produtos (ex.: "Etiqueta" usada na Toalha e no Pêndulo), os dois
+        // aparecem aqui.
         val produtosAfetados = produtoRepository.findByReceitaInsumoId(insumo.id!!)
-        val alertas = produtosAfetados
-            .map { capacidadeService.calcularCapacidade(it) }
-            .filter { !it.gargaloConsistente || it.capacidadeMaxima == 0 }
+        val capacidades = produtosAfetados.map { capacidadeService.calcularCapacidade(it) }
 
-        return EntradaEstoqueResponse(insumo = insumo.toDto(), alertasCapacidade = alertas)
+        return EntradaEstoqueResponse(insumo = insumo.toDto(), capacidadesAfetadas = capacidades)
     }
 
     fun listarMovimentacoes(): List<MovimentacaoResponse> =

@@ -12,6 +12,7 @@ describe('AlertaGargalo', () => {
       insumoLimitanteId: 2,
       insumoLimitanteNome: 'Embalagem',
       gargaloConsistente: false,
+      temAlerta: true,
       itens: [
         { insumoId: 1, insumoNome: 'Toalha', estoqueAtual: 50, quantidadeNecessariaPorUnidade: 1, capacidadeMaxima: 50, ehGargaloDefinido: true },
         { insumoId: 2, insumoNome: 'Embalagem', estoqueAtual: 40, quantidadeNecessariaPorUnidade: 1, capacidadeMaxima: 40, ehGargaloDefinido: false }
@@ -34,6 +35,7 @@ describe('AlertaGargalo', () => {
       insumoLimitanteId: 1,
       insumoLimitanteNome: 'Pêndulo',
       gargaloConsistente: true,
+      temAlerta: false,
       itens: [
         { insumoId: 1, insumoNome: 'Pêndulo', estoqueAtual: 20, quantidadeNecessariaPorUnidade: 1, capacidadeMaxima: 20, ehGargaloDefinido: true }
       ]

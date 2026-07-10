@@ -53,7 +53,7 @@ export default function DashboardPage() {
       <Typography variant="h5" fontWeight={600} gutterBottom>Dashboard</Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
         Visão geral do que está em estoque em casa e do que já foi embalado esperando para voltar
-        para a fábrica da sua sogra.
+        para a fábrica.
       </Typography>
 
       <Grid container spacing={3}>

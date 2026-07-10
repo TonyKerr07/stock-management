@@ -37,11 +37,12 @@ export interface CapacidadeProduto {
   insumoLimitanteNome?: string
   gargaloConsistente: boolean
   itens: CapacidadeInsumo[]
+  temAlerta: boolean
 }
 
 export interface EntradaEstoqueResponse {
   insumo: Insumo
-  alertasCapacidade: CapacidadeProduto[]
+  capacidadesAfetadas: CapacidadeProduto[]
 }
 
 export interface FaltaInsumo {

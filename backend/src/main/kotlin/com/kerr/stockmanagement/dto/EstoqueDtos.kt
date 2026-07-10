@@ -26,11 +26,19 @@ data class CapacidadeProdutoResponse(
     val insumoLimitanteNome: String?,
     val gargaloConsistente: Boolean,
     val itens: List<CapacidadeInsumoResponse>
-)
+) {
+    // true quando o gargalo definido não bate com o insumo que realmente limita a produção,
+    // ou quando a capacidade chegou a zero — é o gatilho pra destacar esse produto na tela
+    val temAlerta: Boolean
+        get() = !gargaloConsistente || capacidadeMaxima == 0
+}
 
 data class EntradaEstoqueResponse(
     val insumo: InsumoResponse,
-    val alertasCapacidade: List<CapacidadeProdutoResponse>
+    // Todos os produtos que usam esse insumo na receita (não só os com problema),
+    // para o usuário ver o panorama completo quando um insumo é compartilhado
+    // entre vários produtos.
+    val capacidadesAfetadas: List<CapacidadeProdutoResponse>
 )
 
 data class MovimentacaoResponse(
