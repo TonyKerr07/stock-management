@@ -1,0 +1,31 @@
+# --- Backend (Gradle/Kotlin) ---
+backend/.gradle/
+backend/build/
+backend/out/
+backend/.kotlin/
+!backend/gradle/wrapper/gradle-wrapper.jar
+
+# --- Frontend (Node/Vite) ---
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+frontend/coverage/
+
+# --- Variáveis de ambiente (NUNCA versionar credenciais) ---
+.env
+.env.local
+*.env
+!*.env.example
+
+# --- IDE ---
+.idea/
+*.iml
+.vscode/
+*.iws
+
+# --- Sistema operacional ---
+.DS_Store
+Thumbs.db
+
+# --- Logs ---
+*.log
